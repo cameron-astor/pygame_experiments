@@ -294,6 +294,10 @@ class StartScene(Scene):
                  sprites: dict,
                  debug: bool) -> None:
         super().__init__(manager, screen, sprites, debug)
+        self.font = pygame.font.SysFont("Arial", 36)
+        self.text = "Press Space to begin."
+        self.text_x = 400
+        self.text_y = 200
 
     def update(self) -> None:
         pass
@@ -301,6 +305,8 @@ class StartScene(Scene):
     def render(self) -> None:
         # Clear screen
         self.screen.fill("black")
+
+        self.screen.blit(self.font.render(self.text, True, "white"), (self.text_x, self.text_y))       
 
         # Update the display
         pygame.display.update() 
@@ -430,6 +436,10 @@ class DeathScene(Scene):
                  sprites: dict, 
                  debug: bool) -> None:
         super().__init__(manager, screen, sprites, debug)
+        self.font = pygame.font.SysFont("Arial", 36)
+        self.text = "You died! Press space to restart."
+        self.text_x = 400
+        self.text_y = 200
 
     def update(self) -> None:
         pass
@@ -438,6 +448,7 @@ class DeathScene(Scene):
         # Clear screen
         self.screen.fill((59, 3, 3))
 
+        self.screen.blit(self.font.render(self.text, True, "white"), (self.text_x, self.text_y))
         # Update the display
         pygame.display.update() 
 
@@ -473,35 +484,6 @@ class Game:
                   "death": DeathScene(self.scene_manager, self.screen, self.sprites, self.debug)}
         self.scene_manager.initialize(scenes, "start")
 
-        # GAME PARAMS #
-        # We could parameterize this further, but not necessary for this tutorial.
-        # self.GRAVITY_CONSTANT = 1700
-        # self.PLAYER_VEL = 200
-        # self.JUMP_CONSTANT = -450
-        # self.OBS_FREQ = 1500
-        # self.OBS_VEL = -200
-        # self.OBS_GAP = 2
-
-        # # Set up player
-        # self.player = Player(self.screen.get_width()/2, 
-        #                      self.screen.get_height()/2, 
-        #                      self.PLAYER_VEL, 
-        #                      self.GRAVITY_CONSTANT,
-        #                      self.sprites["player"]) 
-        
-        # # Set up environment
-        # self.env = Environment(self.OBS_VEL, 
-        #                        self.OBS_FREQ,
-        #                        self.OBS_GAP,
-        #                        self.screen,
-        #                        self.sprites,
-        #                        self.player) # Environment has access to entire sprite dictionary
-        
-        # # Set up score
-        # self.score = Score(self.screen.get_width()/2, 50)
-
-        # self.debug_text = DebugText(50, 50, self.player, self.env)
-
     # MAIN GAME LOOP #
     def run(self) -> None:
         self.previous_time = time.time()
@@ -534,72 +516,6 @@ class Game:
     def set_debug(self, debug: bool) -> None:
         self.debug = debug
 
-    # Polls for events such as user input
-    # def poll_events(self) -> None:
-    #     for event in pygame.event.get():
-
-    #         if event.type == pygame.QUIT: # If the user closes the window
-    #             self.running = False
-
-    #         if event.type == pygame.KEYDOWN: # If a key has been pressed
-
-    #             if event.key == pygame.K_SPACE:
-    #                 self.player.velocity = self.JUMP_CONSTANT # Jump!
-
-    # Updates game logic each step
-    # def update(self) -> None:
-    #     # Delta time
-    #     now = time.time()
-    #     dt = now - self.previous_time
-    #     self.previous_time = now 
-
-    #     # Update player
-    #     self.player.update(dt)
-    #     # Update environment
-    #     self.env.update(dt)
-
-    #     # Check death conditions
-    #     if self.player_collision() or self.player.y > self.screen.get_height() - 30:
-    #         pass
-    #         # Switch to death screen
-
-    #     # Update score if player passes an obstacle
-    #     if self.env.score_tracker > self.score.score:
-    #         self.score.add_score()
-        
-    #     # Update score text
-    #     self.score.update()
-
-    #     # Update debug text
-    #     if self.debug:  
-    #         self.debug_text.update()
-
-    # Checks for a player collision with an obstacle.
-    # Returns True if a collision is detected.
-    # def player_collision(self) -> bool:
-    #     for o in self.env.obstacles:
-    #         for b in o.blocks:
-    #             if b.rect.colliderect(self.player.rect):
-    #                 return True
-    #     return False
-
-    # # Draw entities to the screen each step
-    # def render(self) -> None:
-    #     # Clear screen
-    #     self.screen.fill("black")
-
-    #     # Draw player
-    #     self.player.render(self.screen)
-    #     # Draw environment
-    #     self.env.render(self.screen)
-    #     # Draw score
-    #     self.score.render(self.screen)
-
-    #     if self.debug:
-    #         self.debug_text.render(self.screen)
-
-    #     # Update the display
-    #     pygame.display.update() 
 
 # Main code
 g = Game()
