@@ -49,8 +49,8 @@ class Player(Entity):
     def update(self, dt) -> None:
         if self.moving:
             self.move(dt)
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.sprite, (self.x, self.y))
@@ -86,7 +86,7 @@ class Text:
         self.x = x
         self.y = y
         self.text = text
-        self.font = pygame.font.SysFont("Arial", 12)
+        self.font = pygame.font.SysFont("Calibri", 36)
 
     def set_text(self, new_text: str) -> None:
         self.text = new_text
@@ -106,6 +106,7 @@ class Game:
         self.screen = pygame.display.set_mode((1280, 720))
         self.running = True
         self.sprites = self.load_sprites()
+        self.score = 0
 
         # Keybinds
         self.keybinds = {pygame.K_w: (0, "up"),
@@ -123,11 +124,11 @@ class Game:
         self.text = Text(600, 50, "Mouse position: ")
 
         # Load sounds
-        pygame.mixer.music.load("sfx/music.mp3")
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.load("sfx/music.ogg")
+        pygame.mixer.music.set_volume(0.25)
         pygame.mixer.music.play()
 
-        self.collect_sound = pygame.mixer.Sound("sfx/collect_sound.wav")
+        self.collect_sound = pygame.mixer.Sound("sfx/collect.wav")
         self.collect_sound.set_volume(0.5)
 
     # MAIN GAME LOOP #
@@ -172,9 +173,10 @@ class Game:
             self.collect_sound.play() # Play sound
             # Increase player speed
             self.player.velocity += 100
+            self.score += 1
 
         self.text.update()
-        self.text.set_text(str(pygame.mouse.get_pos()))
+        self.text.set_text(str(self.score))
 
     def render(self) -> None:
         # Clear screen
@@ -202,7 +204,10 @@ class Game:
 
         sprites["collectible"] = pygame.image.load("gfx/collectible.png").convert_alpha()
         sprites["background"] = pygame.image.load("gfx/simple_game_bg.png").convert_alpha()
-        sprites["spaceship"] = pygame.image.load("gfx/spaceship.png").convert_alpha()
+        sprites["spaceship"] = pygame.image.load("gfx/ship.png").convert_alpha()
+
+        # Downscale
+        sprites["spaceship"] = pygame.transform.scale(sprites["spaceship"], (48, 48))
 
         return sprites
     
