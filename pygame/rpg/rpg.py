@@ -308,6 +308,32 @@ class Player:
         self.moving = False
         self.animations.activate_animation("stationary_" + self.direction, 0.1, True)
 
+    # Check if forward movement would result in a collision with the provided
+    # Rect object in the current direction of movement.
+    def check_movement_collision(self, dt, collision_rect: pygame.Rect) -> bool:
+        new_y = 0
+        new_x = 0
+        
+        if self.direction == "up":
+            new_y = self.y - self.velocity * dt
+        elif self.direction == "down":
+            new_y = self.y + self.velocity * dt       
+        elif self.direction == "left":
+            new_x = self.x - self.velocity * dt      
+        elif self.direction == "right":
+            new_x = self.x + self.velocity * dt
+
+        # copy current rect
+        new_rect = pygame.Rect(self.rect.left, self.rect.top, self.rect.width, self.rect.height)
+
+        # Add new values
+        new_rect.x = new_x
+        new_rect.y = new_y
+
+        # Check for collision
+        return new_rect.colliderect(collision_rect)
+
+    # Update position of collision rect
     def update_collider(self) -> None:
         self.rect.x = self.x
         self.rect.y = self.y
@@ -737,7 +763,7 @@ class Game:
                   "l2": Level2(self.scene_manager, self.screen, self.sprites, self.debug),
                   "gameover": GameOverScene(self.scene_manager, self.screen, self.sprites, self.debug),
                   "menu": Menu(self.scene_manager, self.screen, self.sprites, self.debug)}
-        self.scene_manager.initialize(scenes, "gameover")
+        self.scene_manager.initialize(scenes, "menu")
 
         # Play music
         # pygame.mixer.music.load("sfx/music.wav")
